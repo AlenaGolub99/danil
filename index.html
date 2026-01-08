@@ -1,141 +1,182 @@
 <!doctype html>
 <html lang="ru">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <meta name="theme-color" content="#000000" />
-  <meta name="color-scheme" content="dark" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#000000">
   <title>...</title>
 
-  <!-- Подгружаем заранее, чтобы на мобилке не было паузы -->
   <link rel="preload" as="image" href="scream.gif">
   <link rel="preload" as="audio" href="scream.mp3">
+  <link rel="preload" as="image" href="cat.jpg">
 
   <style>
     html, body {
-      height: 100%;
       margin: 0;
-      background: #000;
+      height: 100%;
+      background: black;
       overflow: hidden;
+      font-family: Arial, sans-serif;
     }
 
     * { -webkit-tap-highlight-color: transparent; }
 
-    /* Экран до скримера */
-    #start {
+    .screen {
+      display: none;
       height: 100dvh;
+      color: white;
       display: grid;
       place-items: center;
-      color: #fff;
-      font: 22px/1.4 system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      user-select: none;
       text-align: center;
-      padding: 24px;
-      cursor: pointer;
-      touch-action: manipulation;
     }
 
-    /* Скример-слой */
+    #start {
+      display: grid;
+      cursor: pointer;
+      font-size: 22px;
+    }
+
+    /* скример */
     #scare {
-      display: none;
       position: fixed;
       inset: 0;
-      height: 100dvh;
-      background: #000;
-      z-index: 9999;
+      z-index: 10;
+      background: black;
+      display: none;
     }
 
     #scare img {
-      position: absolute;
-      inset: 0;
       width: 100vw;
       height: 100dvh;
       object-fit: cover;
-      z-index: 1;
     }
 
-    /* Надпись по центру поверх гифки */
-    #scare .text {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      z-index: 2;
-
-      color: #ff0000;
-      font-size: clamp(44px, 10vw, 96px);
-      font-weight: 900;
-      font-family: Arial, sans-serif;
-      letter-spacing: 2px;
-      white-space: nowrap;
-
-      text-shadow:
-        0 0 10px #000,
-        0 0 24px #000,
-        0 0 40px #ff0000;
-
-      pointer-events: none;
+    /* вопросы */
+    .question input {
+      margin-top: 20px;
+      padding: 12px;
+      font-size: 18px;
+      background: black;
+      color: white;
+      border: 1px solid white;
+      outline: none;
+      text-align: center;
     }
 
-    /* (опционально) лёгкая “дрожь” текста */
-    @keyframes shake {
-      0%   { transform: translate(-50%, -50%) translate(0, 0); }
-      20%  { transform: translate(-50%, -50%) translate(2px, -1px); }
-      40%  { transform: translate(-50%, -50%) translate(-2px, 1px); }
-      60%  { transform: translate(-50%, -50%) translate(2px, 1px); }
-      80%  { transform: translate(-50%, -50%) translate(-1px, -2px); }
-      100% { transform: translate(-50%, -50%) translate(0, 0); }
+    .error {
+      color: red;
+      margin-top: 15px;
+      font-size: 24px;
     }
-    #scare.shake .text { animation: shake 120ms infinite; }
+
+    /* кот */
+    #cat img {
+      width: 100vw;
+      height: 100dvh;
+      object-fit: contain;
+      background: black;
+    }
   </style>
 </head>
 
 <body>
-  <div id="start">
+
+  <!-- старт -->
+  <div id="start" class="screen" style="display:grid;">
     Нажми
-    <div style="opacity:.7; font-size:14px; margin-top:10px;">
-      (на Android звук запускается после тапа)
+  </div>
+
+  <!-- скример -->
+  <div id="scare">
+    <img src="scream.gif">
+    <audio id="sound" src="scream.mp3"></audio>
+  </div>
+
+  <!-- вопрос 1 -->
+  <div id="q1" class="screen question">
+    <div>
+      <div style="font-size:26px;">Как вас зовут?</div>
+      <input id="name">
     </div>
   </div>
 
-  <div id="scare">
-    <img id="gif" src="scream.gif" alt="">
-    <audio id="sound" src="scream.mp3" preload="auto"></audio>
+  <!-- вопрос 2 -->
+  <div id="q2" class="screen question">
+    <div>
+      <div style="font-size:26px;">Кто шелуха?</div>
+      <input id="who">
+      <div id="wrong" class="error" style="display:none;">ВЫ ОШИБАЕТЕСЬ</div>
+    </div>
+  </div>
+
+  <!-- кот -->
+  <div id="cat" class="screen">
+    <img src="cat.jpg">
   </div>
 
   <script>
     const start = document.getElementById('start');
     const scare = document.getElementById('scare');
+    const q1 = document.getElementById('q1');
+    const q2 = document.getElementById('q2');
+    const cat = document.getElementById('cat');
+
+    const nameInput = document.getElementById('name');
+    const whoInput = document.getElementById('who');
+    const wrong = document.getElementById('wrong');
     const audio = document.getElementById('sound');
 
-    // AudioContext (стабильнее на мобилках)
+    // звук (AudioContext)
     const AudioCtx = window.AudioContext || window.webkitAudioContext;
     const ctx = new AudioCtx();
     const track = ctx.createMediaElementSource(audio);
     track.connect(ctx.destination);
 
-    function triggerScare() {
-      // показываем скример
+    function startScare() {
       start.style.display = 'none';
       scare.style.display = 'block';
 
-      // (опционально) включить дрожь текста
-      scare.classList.add('shake');
-
-      // звук
       ctx.resume().then(() => {
         audio.currentTime = 0;
-        audio.volume = 1;
-        audio.play().catch(() => {});
+        audio.play().catch(()=>{});
       });
 
-      // fullscreen (на Android Chrome часто работает, но не всегда)
-      document.documentElement.requestFullscreen?.().catch(() => {});
+      setTimeout(() => {
+        scare.style.display = 'none';
+        q1.style.display = 'grid';
+        nameInput.focus();
+      }, 2000);
     }
 
-    // Запуск строго по первому действию пользователя
-    document.addEventListener('touchstart', triggerScare, { once: true, passive: true });
-    document.addEventListener('click', triggerScare, { once: true });
+    start.addEventListener('click', startScare, { once: true });
+    start.addEventListener('touchstart', startScare, { once: true });
+
+    nameInput.addEventListener('keydown', e => {
+      if (e.key === 'Enter') {
+        if (nameInput.value.trim().toLowerCase() === 'данил') {
+          q1.style.display = 'none';
+          q2.style.display = 'grid';
+          whoInput.focus();
+        } else {
+          nameInput.value = '';
+        }
+      }
+    });
+
+    whoInput.addEventListener('keydown', e => {
+      if (e.key === 'Enter') {
+        const val = whoInput.value.trim().toLowerCase();
+
+        if (val === 'алена' || val === 'алёна') {
+          wrong.style.display = 'block';
+          whoInput.value = '';
+        } else {
+          q2.style.display = 'none';
+          cat.style.display = 'grid';
+        }
+      }
+    });
   </script>
+
 </body>
 </html>
