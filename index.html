@@ -1,88 +1,98 @@
 <!doctype html>
 <html lang="ru">
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>...</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
-    #scare {
-  display: none;
-  position: fixed;
-  inset: 0;
-}
+    html, body { height: 100%; margin: 0; background: #000; overflow: hidden; }
 
-#scare img {
-  width: 100vw;
-  height: 100vh;
-  object-fit: cover;
-}
-
-#scare .text {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  color: red;
-  font-size: 80px;
-  font-weight: 900;
-  font-family: Arial, sans-serif;
-  text-shadow: 0 0 20px black, 0 0 40px red;
-  pointer-events: none;
-}
-
-    html, body {
-      margin: 0;
-      height: 100%;
-      background: black;
-      overflow: hidden;
-    }
     #start {
       height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-family: Arial, sans-serif;
-      font-size: 24px;
-      cursor: pointer;
+      display: grid;
+      place-items: center;
+      color: #fff;
+      font: 22px/1.4 system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
       user-select: none;
+      cursor: pointer;
+      text-align: center;
+      padding: 24px;
     }
+
+    /* ВАЖНО: position: fixed + z-index */
     #scare {
       display: none;
       position: fixed;
       inset: 0;
+      background: #000;
+      z-index: 9999;
     }
+
     #scare img {
+      position: absolute;
+      inset: 0;
       width: 100vw;
       height: 100vh;
       object-fit: cover;
+      z-index: 1;
+    }
+
+    /* ТЕКСТ ПОВЕРХ ГИФКИ */
+    #scare .text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 2;
+
+      color: #ff0000;
+      font-size: 90px;
+      font-weight: 900;
+      font-family: Arial, sans-serif;
+      letter-spacing: 2px;
+
+      text-shadow: 0 0 10px #000, 0 0 25px #000, 0 0 35px #ff0000;
+      pointer-events: none;
+      white-space: nowrap;
     }
   </style>
 </head>
 <body>
 
-<div id="start">Нажми</div>
-
-<div id="scare">
-  <img src="scream.gif">
-  <audio id="sound" src="scream.mp3" preload="auto"></audio>
+  <div id="start">Нажми, чтобы продолжить</div>
 
   <div id="scare">
-  <img src="scream.gif">
-  <div class="text">ya pidor</div>
-  <audio id="sound" src="scream.mp3"></audio> 
-    
-</div>
-</div>
+    <img src="scream.gif" alt="">
+    <div class="text">лалка</div>
+    <audio id="sound" src="scream.mp3" preload="auto"></audio>
+  </div>
 
-<script>
-  document.getElementById('start').onclick = () => {
-    document.getElementById('start').style.display = 'none';
-    document.getElementById('scare').style.display = 'block';
-    document.getElementById('sound').play();
-    document.documentElement.requestFullscreen?.();
-  };
-</script>
+  <script>
+    const start = document.getElementById('start');
+    const scare = document.getElementById('scare');
+    const audio = document.getElementById('sound');
+
+    // AudioContext вариант (как ты делала)
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    const ctx = new AudioCtx();
+    const track = ctx.createMediaElementSource(audio);
+    track.connect(ctx.destination);
+
+    function go() {
+      start.style.display = 'none';
+      scare.style.display = 'block';
+
+      ctx.resume().then(() => {
+        audio.currentTime = 0;
+        audio.play().catch(() => {});
+      });
+
+      document.documentElement.requestFullscreen?.().catch(() => {});
+    }
+
+    document.addEventListener('click', go, { once: true });
+    document.addEventListener('touchstart', go, { once: true });
+  </script>
 
 </body>
 </html>
