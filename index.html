@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <title>...</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    html, body {
+      margin: 0;
+      height: 100%;
+      background: black;
+      overflow: hidden;
+    }
+    #start {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-family: Arial, sans-serif;
+      font-size: 24px;
+      cursor: pointer;
+      user-select: none;
+    }
+    #scare {
+      display: none;
+      position: fixed;
+      inset: 0;
+    }
+    #scare img {
+      width: 100vw;
+      height: 100vh;
+      object-fit: cover;
+    }
+  </style>
+</head>
+<body>
+
+<div id="start">Нажми</div>
+
+<div id="scare">
+  <img src="scream.jpg">
+  <audio id="sound" src="scream.mp3"></audio>
+</div>
+
+<script>
+  document.getElementById('start').onclick = () => {
+    document.getElementById('start').style.display = 'none';
+    document.getElementById('scare').style.display = 'block';
+    document.getElementById('sound').play();
+    document.documentElement.requestFullscreen?.();
+  };
+</script>
+
+</body>
+</html>
