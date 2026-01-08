@@ -2,28 +2,45 @@
 <html lang="ru">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#000000" />
+  <meta name="color-scheme" content="dark" />
   <title>...</title>
-  <style>
-    html, body { height: 100%; margin: 0; background: #000; overflow: hidden; }
 
-    #start {
+  <!-- Подгружаем заранее, чтобы на мобилке не было паузы -->
+  <link rel="preload" as="image" href="scream.gif">
+  <link rel="preload" as="audio" href="scream.mp3">
+
+  <style>
+    html, body {
       height: 100%;
+      margin: 0;
+      background: #000;
+      overflow: hidden;
+    }
+
+    * { -webkit-tap-highlight-color: transparent; }
+
+    /* Экран до скримера */
+    #start {
+      height: 100dvh;
       display: grid;
       place-items: center;
       color: #fff;
       font: 22px/1.4 system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
       user-select: none;
-      cursor: pointer;
       text-align: center;
       padding: 24px;
+      cursor: pointer;
+      touch-action: manipulation;
     }
 
-    /* ВАЖНО: position: fixed + z-index */
+    /* Скример-слой */
     #scare {
       display: none;
       position: fixed;
       inset: 0;
+      height: 100dvh;
       background: #000;
       z-index: 9999;
     }
@@ -32,12 +49,12 @@
       position: absolute;
       inset: 0;
       width: 100vw;
-      height: 100vh;
+      height: 100dvh;
       object-fit: cover;
       z-index: 1;
     }
 
-    /* ТЕКСТ ПОВЕРХ ГИФКИ */
+    /* Надпись по центру поверх гифки */
     #scare .text {
       position: absolute;
       top: 50%;
@@ -46,23 +63,43 @@
       z-index: 2;
 
       color: #ff0000;
-      font-size: 90px;
+      font-size: clamp(44px, 10vw, 96px);
       font-weight: 900;
       font-family: Arial, sans-serif;
       letter-spacing: 2px;
-
-      text-shadow: 0 0 10px #000, 0 0 25px #000, 0 0 35px #ff0000;
-      pointer-events: none;
       white-space: nowrap;
+
+      text-shadow:
+        0 0 10px #000,
+        0 0 24px #000,
+        0 0 40px #ff0000;
+
+      pointer-events: none;
     }
+
+    /* (опционально) лёгкая “дрожь” текста */
+    @keyframes shake {
+      0%   { transform: translate(-50%, -50%) translate(0, 0); }
+      20%  { transform: translate(-50%, -50%) translate(2px, -1px); }
+      40%  { transform: translate(-50%, -50%) translate(-2px, 1px); }
+      60%  { transform: translate(-50%, -50%) translate(2px, 1px); }
+      80%  { transform: translate(-50%, -50%) translate(-1px, -2px); }
+      100% { transform: translate(-50%, -50%) translate(0, 0); }
+    }
+    #scare.shake .text { animation: shake 120ms infinite; }
   </style>
 </head>
-<body>
 
-  <div id="start">Нажми, чтобы продолжить</div>
+<body>
+  <div id="start">
+    Нажми, чтобы продолжить
+    <div style="opacity:.7; font-size:14px; margin-top:10px;">
+      (на Android звук запускается после тапа)
+    </div>
+  </div>
 
   <div id="scare">
-    <img src="scream.gif" alt="">
+    <img id="gif" src="scream.gif" alt="">
     <div class="text">лалка</div>
     <audio id="sound" src="scream.mp3" preload="auto"></audio>
   </div>
@@ -72,27 +109,34 @@
     const scare = document.getElementById('scare');
     const audio = document.getElementById('sound');
 
-    // AudioContext вариант (как ты делала)
+    // AudioContext (стабильнее на мобилках)
     const AudioCtx = window.AudioContext || window.webkitAudioContext;
     const ctx = new AudioCtx();
     const track = ctx.createMediaElementSource(audio);
     track.connect(ctx.destination);
 
-    function go() {
+    function triggerScare() {
+      // показываем скример
       start.style.display = 'none';
       scare.style.display = 'block';
 
+      // (опционально) включить дрожь текста
+      scare.classList.add('shake');
+
+      // звук
       ctx.resume().then(() => {
         audio.currentTime = 0;
+        audio.volume = 1;
         audio.play().catch(() => {});
       });
 
+      // fullscreen (на Android Chrome часто работает, но не всегда)
       document.documentElement.requestFullscreen?.().catch(() => {});
     }
 
-    document.addEventListener('click', go, { once: true });
-    document.addEventListener('touchstart', go, { once: true });
+    // Запуск строго по первому действию пользователя
+    document.addEventListener('touchstart', triggerScare, { once: true, passive: true });
+    document.addEventListener('click', triggerScare, { once: true });
   </script>
-
 </body>
 </html>
