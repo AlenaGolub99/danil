@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ДанилКликер - Кликай на Данила, ебаный мудила!</title>
+    <title>ДанилКликер - Кликай на Данила!</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&family=Press+Start+2P&family=Rubik+Mono+One&display=swap" rel="stylesheet">
@@ -14,12 +14,11 @@
         <header>
             <div class="title-container">
                 <h1><i class="fas fa-mouse-pointer"></i> ДАНИЛКЛИКЕР</h1>
-                <p class="subtitle">Кликай на Данила, получай ачивки и стань главным пидорасом страны!</p>
+                <p class="subtitle">Кликай на Данила, получай ачивки!</p>
             </div>
         </header>
 
         <div class="main-content">
-            <!-- Статистика -->
             <div class="stats-panel">
                 <div class="stat-box">
                     <div class="stat-header">
@@ -52,13 +51,12 @@
                 </div>
             </div>
 
-            <!-- Основная игровая область -->
             <div class="game-area">
                 <div class="clicker-section">
-                    <!-- Область с картинкой Данила -->
                     <div class="clicker-container">
                         <div class="image-frame">
                             <div id="danilImage" class="danil-image">
+                                <!-- Картинка загрузится через JS -->
                                 <div class="image-placeholder">
                                     <div class="placeholder-icon">
                                         <i class="fas fa-user"></i>
@@ -91,7 +89,6 @@
                         </div>
                     </div>
 
-                    <!-- Улучшения -->
                     <div class="upgrades-section">
                         <div class="section-title">
                             <i class="fas fa-arrow-up"></i>
@@ -151,11 +148,10 @@
                     </div>
                 </div>
 
-                <!-- Ачивки -->
                 <div class="achievements-section">
                     <div class="section-title">
                         <i class="fas fa-trophy"></i>
-                        <h3>АЧИВКИ ДАНИЛКЛИКЕРА</h3>
+                        <h3>АЧИВКИ</h3>
                         <div class="progress-bar-container">
                             <div class="progress-bar-bg">
                                 <div class="progress-bar-fill" id="achievementBar"></div>
@@ -170,11 +166,10 @@
                 </div>
             </div>
 
-            <!-- Управление -->
             <div class="controls-section">
                 <div class="controls-title">
                     <i class="fas fa-cogs"></i>
-                    <h3>УПРАВЛЕНИЕ ИГРОЙ</h3>
+                    <h3>УПРАВЛЕНИЕ</h3>
                 </div>
                 
                 <div class="controls-grid">
@@ -216,7 +211,7 @@
 
         <footer>
             <div class="footer-content">
-                <p><i class="fas fa-heart"></i> ДанилКликер v2.0 | Сделано Аленой Голубь при поддержке ЛГБТ комьюнити</p>
+                <p><i class="fas fa-heart"></i> ДанилКликер v2.0</p>
                 <p class="footer-hint">Игра автоматически сохраняет прогресс в браузере</p>
                 <p class="footer-hint">Совет: Используйте ПРОБЕЛ для быстрых кликов!</p>
             </div>
@@ -271,50 +266,19 @@
                         <p>Получайте ачивки за достижения и заполняйте коллекцию</p>
                     </div>
                 </div>
-                <div class="help-item">
-                    <i class="fas fa-bolt"></i>
-                    <div>
-                        <h4>Комбо</h4>
-                        <p>Быстрые клики активируют комбо-систему с множителем</p>
-                    </div>
-                </div>
-                <div class="help-item">
-                    <i class="fas fa-save"></i>
-                    <div>
-                        <h4>Сохранение</h4>
-                        <p>Прогресс автоматически сохраняется в вашем браузере</p>
-                    </div>
-                </div>
-                <div class="help-item">
-                    <i class="fas fa-volume-up"></i>
-                    <div>
-                        <h4>Звуки</h4>
-                        <p>Положите файлы click.mp3 и achievement.mp3 в папку с игрой</p>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
 
-    <!-- Аудио элементы -->
+    <!-- Звуки (используем онлайн-источники) -->
     <audio id="clickSound" preload="auto">
-        <source src="click.mp3" type="audio/mpeg">
         <source src="https://assets.mixkit.co/sfx/preview/mixkit-select-click-1109.mp3" type="audio/mpeg">
     </audio>
     
     <audio id="achievementSound" preload="auto">
-        <source src="achievement.mp3" type="audio/mpeg">
         <source src="https://assets.mixkit.co/sfx/preview/mixkit-winning-chimes-2015.mp3" type="audio/mpeg">
-    </audio>
-    
-    <audio id="upgradeSound" preload="auto">
-        <source src="https://assets.mixkit.co/sfx/preview/mixkit-unlock-game-notification-253.mp3" type="audio/mpeg">
-    </audio>
-    
-    <audio id="comboSound" preload="auto">
-        <source src="https://assets.mixkit.co/sfx/preview/mixkit-game-ball-tap-2073.mp3" type="audio/mpeg">
     </audio>
 
     <script src="script.js"></script>
 </body>
-                </html>
+                                        </html>
