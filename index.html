@@ -1,182 +1,108 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#000000">
-  <title>...</title>
-
-  <link rel="preload" as="image" href="scream.gif">
-  <link rel="preload" as="audio" href="scream.mp3">
-  <link rel="preload" as="image" href="cat.jpg">
-
-  <style>
-    html, body {
-      margin: 0;
-      height: 100%;
-      background: black;
-      overflow: hidden;
-      font-family: Arial, sans-serif;
-    }
-
-    * { -webkit-tap-highlight-color: transparent; }
-
-    .screen {
-      display: none;
-      height: 100dvh;
-      color: white;
-      display: grid;
-      place-items: center;
-      text-align: center;
-    }
-
-    #start {
-      display: grid;
-      cursor: pointer;
-      font-size: 22px;
-    }
-
-    /* скример */
-    #scare {
-      position: fixed;
-      inset: 0;
-      z-index: 10;
-      background: black;
-      display: none;
-    }
-
-    #scare img {
-      width: 100vw;
-      height: 100dvh;
-      object-fit: cover;
-    }
-
-    /* вопросы */
-    .question input {
-      margin-top: 20px;
-      padding: 12px;
-      font-size: 18px;
-      background: black;
-      color: white;
-      border: 1px solid white;
-      outline: none;
-      text-align: center;
-    }
-
-    .error {
-      color: red;
-      margin-top: 15px;
-      font-size: 24px;
-    }
-
-    /* кот */
-    #cat img {
-      width: 100vw;
-      height: 100dvh;
-      object-fit: contain;
-      background: black;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ДанилКликер - Кликай на Данила, ебаный мудила!</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&family=Press+Start+2P&display=swap" rel="stylesheet">
 </head>
-
 <body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-mouse-pointer"></i> ДАНИЛКЛИКЕР</h1>
+            <p class="subtitle">Кликай на Данила, получай ачивки и стань главным пидорасом страны!</p>
+        </header>
 
-  <!-- старт -->
-  <div id="start" class="screen" style="display:grid;">
-    Нажми
-  </div>
+        <div class="main-content">
+            <div class="stats-panel">
+                <div class="stat-box">
+                    <h2><i class="fas fa-hand-pointer"></i> Клики</h2>
+                    <div id="clickCount" class="big-number">0</div>
+                    <div class="stat-info">Всего кликов</div>
+                </div>
+                
+                <div class="stat-box">
+                    <h2><i class="fas fa-tachometer-alt"></i> CPS</h2>
+                    <div id="cps" class="big-number">0</div>
+                    <div class="stat-info">Кликов в секунду</div>
+                </div>
+                
+                <div class="stat-box">
+                    <h2><i class="fas fa-trophy"></i> Ачивки</h2>
+                    <div id="achievementCount" class="big-number">0/15</div>
+                    <div class="stat-info">Получено</div>
+                </div>
+            </div>
 
-  <!-- скример -->
-  <div id="scare">
-    <img src="scream.gif">
-    <audio id="sound" src="scream.mp3"></audio>
-  </div>
+            <div class="clicker-section">
+                <div class="clicker-container">
+                    <div id="danilImage" class="danil-image">
+                      
+                        <!-- Здесь будет изображение Данила -->
+                        <div class="image-placeholder">
+                            <i class="fas fa-user"></i>
+                            <p>Загрузите фото Данила</p>
+                        </div>
+                      
+                        <div class="click-effect" id="clickEffect">+1</div>
+                    </div>
+                    <div class="instructions">
+                        <p><i class="fas fa-mouse"></i> ЖМИ СЮДА! <i class="fas fa-mouse"></i></p>
+                        <p class="hint">Можно кликать мышкой или нажимать пробел</p>
+                    </div>
+                </div>
 
-  <!-- вопрос 1 -->
-  <div id="q1" class="screen question">
-    <div>
-      <div style="font-size:26px;">Как вас зовут?</div>
-      <input id="name">
+                <div class="upgrades">
+                    <h3><i class="fas fa-arrow-up"></i> Улучшения</h3>
+                    <div class="upgrade" id="autoClicker">
+                        <span>Автокликер (1 клик/сек)</span>
+                        <button class="upgrade-btn" data-cost="50">Купить за 50 кликов</button>
+                    </div>
+                    <div class="upgrade" id="megaClick">
+                        <span>Мега-клик (х2 силы)</span>
+                        <button class="upgrade-btn" data-cost="100">Купить за 100 кликов</button>
+                    </div>
+                    <div class="upgrade" id="clickFactory">
+                        <span>Фабрика кликов (5 кликов/сек)</span>
+                        <button class="upgrade-btn" data-cost="500">Купить за 500 кликов</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="achievements-section">
+                <h2><i class="fas fa-trophy"></i> Ачивки ДанилКликера</h2>
+                <div class="achievements-grid" id="achievementsGrid">
+                    <!-- Ачивки будут добавляться через JS -->
+                </div>
+            </div>
+
+            <div class="controls">
+                <button id="saveBtn" class="control-btn"><i class="fas fa-save"></i> Сохранить</button>
+                <button id="resetBtn" class="control-btn reset"><i class="fas fa-redo"></i> Сбросить</button>
+                <button id="importImageBtn" class="control-btn"><i class="fas fa-image"></i> Загрузить фото</button>
+                <input type="file" id="imageUpload" accept="image/*" style="display: none;">
+            </div>
+        </div>
+
+        <footer>
+            <p>ДанилКликер v1.0 | Сделано Аленой Голубь с <i class="fas fa-heart"></i> для Данила (ты пидор) </p>
+            <p class="hint">Примечание: игра использует localStorage для сохранения прогресса</p>
+        </footer>
     </div>
-  </div>
 
-  <!-- вопрос 2 -->
-  <div id="q2" class="screen question">
-    <div>
-      <div style="font-size:26px;">Кто шлюха?</div>
-      <input id="who">
-      <div id="wrong" class="error" style="display:none;">ИДИ НАХУЙ КОНЧЕННАЯ ПИДРИЛА БЛЯТЬ</div>
+    <div id="achievementPopup" class="achievement-popup">
+        <div class="popup-content">
+            <i class="fas fa-trophy"></i>
+            <h3>Новая ачивка!</h3>
+            <p id="popupText">Смачно говна поел</p>
+        </div>
     </div>
-  </div>
 
-  <!-- кот -->
-  <div id="cat" class="screen">
-    <img src="cat.jpg">
-  </div>
+    <audio id="clickSound" src="assets/click.mp3" preload="auto"></audio>
+    <audio id="achievementSound" src="assets/achievement.mp3" preload="auto"></audio>
 
-  <script>
-    const start = document.getElementById('start');
-    const scare = document.getElementById('scare');
-    const q1 = document.getElementById('q1');
-    const q2 = document.getElementById('q2');
-    const cat = document.getElementById('cat');
-
-    const nameInput = document.getElementById('name');
-    const whoInput = document.getElementById('who');
-    const wrong = document.getElementById('wrong');
-    const audio = document.getElementById('sound');
-
-    // звук (AudioContext)
-    const AudioCtx = window.AudioContext || window.webkitAudioContext;
-    const ctx = new AudioCtx();
-    const track = ctx.createMediaElementSource(audio);
-    track.connect(ctx.destination);
-
-    function startScare() {
-      start.style.display = 'none';
-      scare.style.display = 'block';
-
-      ctx.resume().then(() => {
-        audio.currentTime = 0;
-        audio.play().catch(()=>{});
-      });
-
-      setTimeout(() => {
-        scare.style.display = 'none';
-        q1.style.display = 'grid';
-        nameInput.focus();
-      }, 2000);
-    }
-
-    start.addEventListener('click', startScare, { once: true });
-    start.addEventListener('touchstart', startScare, { once: true });
-
-    nameInput.addEventListener('keydown', e => {
-      if (e.key === 'Enter') {
-        if (nameInput.value.trim().toLowerCase() === 'данил') {
-          q1.style.display = 'none';
-          q2.style.display = 'grid';
-          whoInput.focus();
-        } else {
-          nameInput.value = '';
-        }
-      }
-    });
-
-    whoInput.addEventListener('keydown', e => {
-      if (e.key === 'Enter') {
-        const val = whoInput.value.trim().toLowerCase();
-
-        if (val === 'алена' || val === 'ты') {
-          wrong.style.display = 'block';
-          whoInput.value = '';
-        } else {
-          q2.style.display = 'none';
-          cat.style.display = 'grid';
-        }
-      }
-    });
-  </script>
-
+    <script src="script.js"></script>
 </body>
-</html>
+  </html>
