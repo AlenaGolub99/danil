@@ -6,103 +6,315 @@
     <title>ДанилКликер - Кликай на Данила, ебаный мудила!</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&family=Press+Start+2P&family=Rubik+Mono+One&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="danil.png">
 </head>
 <body>
     <div class="container">
         <header>
-            <h1><i class="fas fa-mouse-pointer"></i> ДАНИЛКЛИКЕР</h1>
-            <p class="subtitle">Кликай на Данила, получай ачивки и стань главным пидорасом страны!</p>
+            <div class="title-container">
+                <h1><i class="fas fa-mouse-pointer"></i> ДАНИЛКЛИКЕР</h1>
+                <p class="subtitle">Кликай на Данила, получай ачивки и стань главным пидорасом страны!</p>
+            </div>
         </header>
 
         <div class="main-content">
+            <!-- Статистика -->
             <div class="stats-panel">
                 <div class="stat-box">
-                    <h2><i class="fas fa-hand-pointer"></i> Клики</h2>
+                    <div class="stat-header">
+                        <i class="fas fa-hand-pointer"></i>
+                        <h3>Клики</h3>
+                    </div>
                     <div id="clickCount" class="big-number">0</div>
                     <div class="stat-info">Всего кликов</div>
+                    <div class="stat-sub">Сила: <span id="clickPower">1</span> за клик</div>
                 </div>
                 
                 <div class="stat-box">
-                    <h2><i class="fas fa-tachometer-alt"></i> CPS</h2>
-                    <div id="cps" class="big-number">0</div>
+                    <div class="stat-header">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <h3>CPS</h3>
+                    </div>
+                    <div id="cps" class="big-number">0.0</div>
                     <div class="stat-info">Кликов в секунду</div>
+                    <div class="stat-sub">Автокликов: <span id="autoClickers">0</span></div>
                 </div>
                 
                 <div class="stat-box">
-                    <h2><i class="fas fa-trophy"></i> Ачивки</h2>
+                    <div class="stat-header">
+                        <i class="fas fa-trophy"></i>
+                        <h3>Ачивки</h3>
+                    </div>
                     <div id="achievementCount" class="big-number">0/15</div>
                     <div class="stat-info">Получено</div>
+                    <div class="stat-sub">Прогресс: <span id="achievementProgress">0%</span></div>
                 </div>
             </div>
 
-            <div class="clicker-section">
-                <div class="clicker-container">
-                    <div id="danilImage" class="danil-image">
-                      
-                        <!-- Здесь будет изображение Данила -->
-                        <div class="image-placeholder">
-                            <i class="fas fa-user"></i>
-                            <p>Загрузите фото Данила</p>
+            <!-- Основная игровая область -->
+            <div class="game-area">
+                <div class="clicker-section">
+                    <!-- Область с картинкой Данила -->
+                    <div class="clicker-container">
+                        <div class="image-frame">
+                            <div id="danilImage" class="danil-image">
+                                <div class="image-placeholder">
+                                    <div class="placeholder-icon">
+                                        <i class="fas fa-user"></i>
+                                        <i class="fas fa-mouse-pointer pulse"></i>
+                                    </div>
+                                    <p>ЖМИ на Данила!</p>
+                                    <p class="hint">Размер фото: 500×700 пикселей</p>
+                                </div>
+                                <div class="click-effect" id="clickEffect">+1</div>
+                            </div>
                         </div>
-                      
-                        <div class="click-effect" id="clickEffect">+1</div>
+                        
+                        <div class="click-controls">
+                            <div class="instructions">
+                                <p><i class="fas fa-mouse"></i> ЖМИ СЮДА! <i class="fas fa-mouse"></i></p>
+                                <p class="hint">Кликай мышкой или жми ПРОБЕЛ</p>
+                                <p class="hint">Файл должен называться: danil.png</p>
+                            </div>
+                            <div class="combo-display">
+                                <div class="combo-counter">
+                                    <i class="fas fa-bolt"></i>
+                                    <span>Комбо: <span id="comboCount">0</span></span>
+                                </div>
+                                <div class="combo-timer">
+                                    <div class="timer-bar">
+                                        <div class="timer-fill" id="comboTimer"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="instructions">
-                        <p><i class="fas fa-mouse"></i> ЖМИ СЮДА! <i class="fas fa-mouse"></i></p>
-                        <p class="hint">Можно кликать мышкой или нажимать пробел</p>
+
+                    <!-- Улучшения -->
+                    <div class="upgrades-section">
+                        <div class="section-title">
+                            <i class="fas fa-arrow-up"></i>
+                            <h3>УЛУЧШЕНИЯ</h3>
+                        </div>
+                        
+                        <div class="upgrade-card" id="autoClicker">
+                            <div class="upgrade-icon">
+                                <i class="fas fa-robot"></i>
+                            </div>
+                            <div class="upgrade-info">
+                                <h4>Автокликер</h4>
+                                <p>Автоматически кликает 1 раз в секунду</p>
+                                <div class="upgrade-stats">
+                                    <span><i class="fas fa-bolt"></i> +1 CPS</span>
+                                </div>
+                            </div>
+                            <button class="upgrade-btn" data-cost="50">
+                                <span class="cost">50</span>
+                                <span class="btn-text">КУПИТЬ</span>
+                            </button>
+                        </div>
+
+                        <div class="upgrade-card" id="megaClick">
+                            <div class="upgrade-icon">
+                                <i class="fas fa-fist-raised"></i>
+                            </div>
+                            <div class="upgrade-info">
+                                <h4>Мега-клик</h4>
+                                <p>Удваивает силу каждого клика</p>
+                                <div class="upgrade-stats">
+                                    <span><i class="fas fa-hand-rock"></i> ×2 сила</span>
+                                </div>
+                            </div>
+                            <button class="upgrade-btn" data-cost="100">
+                                <span class="cost">100</span>
+                                <span class="btn-text">КУПИТЬ</span>
+                            </button>
+                        </div>
+
+                        <div class="upgrade-card" id="clickFactory">
+                            <div class="upgrade-icon">
+                                <i class="fas fa-industry"></i>
+                            </div>
+                            <div class="upgrade-info">
+                                <h4>Фабрика кликов</h4>
+                                <p>Производит 5 кликов в секунду</p>
+                                <div class="upgrade-stats">
+                                    <span><i class="fas fa-bolt"></i> +5 CPS</span>
+                                </div>
+                            </div>
+                            <button class="upgrade-btn" data-cost="500">
+                                <span class="cost">500</span>
+                                <span class="btn-text">КУПИТЬ</span>
+                            </button>
+                        </div>
                     </div>
                 </div>
 
-                <div class="upgrades">
-                    <h3><i class="fas fa-arrow-up"></i> Улучшения</h3>
-                    <div class="upgrade" id="autoClicker">
-                        <span>Автокликер (1 клик/сек)</span>
-                        <button class="upgrade-btn" data-cost="50">Купить за 50 кликов</button>
+                <!-- Ачивки -->
+                <div class="achievements-section">
+                    <div class="section-title">
+                        <i class="fas fa-trophy"></i>
+                        <h3>АЧИВКИ ДАНИЛКЛИКЕРА</h3>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar-bg">
+                                <div class="progress-bar-fill" id="achievementBar"></div>
+                            </div>
+                            <span class="progress-text" id="achievementText">0%</span>
+                        </div>
                     </div>
-                    <div class="upgrade" id="megaClick">
-                        <span>Мега-клик (х2 силы)</span>
-                        <button class="upgrade-btn" data-cost="100">Купить за 100 кликов</button>
-                    </div>
-                    <div class="upgrade" id="clickFactory">
-                        <span>Фабрика кликов (5 кликов/сек)</span>
-                        <button class="upgrade-btn" data-cost="500">Купить за 500 кликов</button>
+                    
+                    <div class="achievements-grid" id="achievementsGrid">
+                        <!-- Ачивки загружаются через JS -->
                     </div>
                 </div>
             </div>
 
-            <div class="achievements-section">
-                <h2><i class="fas fa-trophy"></i> Ачивки ДанилКликера</h2>
-                <div class="achievements-grid" id="achievementsGrid">
-                    <!-- Ачивки будут добавляться через JS -->
+            <!-- Управление -->
+            <div class="controls-section">
+                <div class="controls-title">
+                    <i class="fas fa-cogs"></i>
+                    <h3>УПРАВЛЕНИЕ ИГРОЙ</h3>
                 </div>
-            </div>
-
-            <div class="controls">
-                <button id="saveBtn" class="control-btn"><i class="fas fa-save"></i> Сохранить</button>
-                <button id="resetBtn" class="control-btn reset"><i class="fas fa-redo"></i> Сбросить</button>
-                <button id="importImageBtn" class="control-btn"><i class="fas fa-image"></i> Загрузить фото</button>
-                <input type="file" id="imageUpload" accept="image/*" style="display: none;">
+                
+                <div class="controls-grid">
+                    <button id="saveBtn" class="control-btn">
+                        <i class="fas fa-save"></i>
+                        <span>СОХРАНИТЬ</span>
+                        <span class="btn-hint">Автосохранение каждые 30 сек</span>
+                    </button>
+                    
+                    <button id="resetBtn" class="control-btn reset">
+                        <i class="fas fa-redo"></i>
+                        <span>СБРОСИТЬ</span>
+                        <span class="btn-hint">Начать заново</span>
+                    </button>
+                    
+                    <div class="file-upload-wrapper">
+                        <button id="importImageBtn" class="control-btn upload">
+                            <i class="fas fa-image"></i>
+                            <span>ЗАГРУЗИТЬ ФОТО</span>
+                            <span class="btn-hint">Изменить фото Данила</span>
+                        </button>
+                        <input type="file" id="imageUpload" accept="image/*" hidden>
+                    </div>
+                    
+                    <button id="soundToggle" class="control-btn sound">
+                        <i class="fas fa-volume-up"></i>
+                        <span>ЗВУК ВКЛ</span>
+                        <span class="btn-hint">Включить/выключить звуки</span>
+                    </button>
+                    
+                    <button id="helpBtn" class="control-btn help">
+                        <i class="fas fa-question-circle"></i>
+                        <span>ПОМОЩЬ</span>
+                        <span class="btn-hint">Как играть</span>
+                    </button>
+                </div>
             </div>
         </div>
 
         <footer>
-            <p>ДанилКликер v1.0 | Сделано Аленой Голубь с <i class="fas fa-heart"></i> для Данила (ты пидор) </p>
-            <p class="hint">Примечание: игра использует localStorage для сохранения прогресса</p>
+            <div class="footer-content">
+                <p><i class="fas fa-heart"></i> ДанилКликер v2.0 | Сделано Аленой Голубь при поддержке ЛГБТ комьюнити</p>
+                <p class="footer-hint">Игра автоматически сохраняет прогресс в браузере</p>
+                <p class="footer-hint">Совет: Используйте ПРОБЕЛ для быстрых кликов!</p>
+            </div>
         </footer>
     </div>
 
+    <!-- Попап ачивки -->
     <div id="achievementPopup" class="achievement-popup">
         <div class="popup-content">
-            <i class="fas fa-trophy"></i>
-            <h3>Новая ачивка!</h3>
-            <p id="popupText">Смачно говна поел</p>
+            <div class="popup-icon">
+                <i class="fas fa-trophy"></i>
+                <div class="confetti"></div>
+                <div class="confetti"></div>
+                <div class="confetti"></div>
+            </div>
+            <h3>НОВАЯ АЧИВКА!</h3>
+            <p id="popupTitle">Название ачивки</p>
+            <p id="popupDesc" class="popup-desc">Описание ачивки</p>
+            <div class="popup-progress">
+                <i class="fas fa-star"></i>
+                <span>Получено: <span id="popupCount">0</span>/15 ачивок</span>
+            </div>
         </div>
     </div>
 
-    <audio id="clickSound" src="assets/click.mp3" preload="auto"></audio>
-    <audio id="achievementSound" src="assets/achievement.mp3" preload="auto"></audio>
+    <!-- Попап помощи -->
+    <div id="helpPopup" class="help-popup">
+        <div class="help-content">
+            <div class="help-header">
+                <h3><i class="fas fa-question-circle"></i> КАК ИГРАТЬ?</h3>
+                <button id="closeHelp" class="close-btn">&times;</button>
+            </div>
+            <div class="help-body">
+                <div class="help-item">
+                    <i class="fas fa-mouse-pointer"></i>
+                    <div>
+                        <h4>Основная механика</h4>
+                        <p>Кликайте на фото Данила мышкой или нажимайте ПРОБЕЛ для кликов</p>
+                    </div>
+                </div>
+                <div class="help-item">
+                    <i class="fas fa-arrow-up"></i>
+                    <div>
+                        <h4>Улучшения</h4>
+                        <p>Покупайте улучшения за клики для увеличения силы и автоматизации</p>
+                    </div>
+                </div>
+                <div class="help-item">
+                    <i class="fas fa-trophy"></i>
+                    <div>
+                        <h4>Ачивки</h4>
+                        <p>Получайте ачивки за достижения и заполняйте коллекцию</p>
+                    </div>
+                </div>
+                <div class="help-item">
+                    <i class="fas fa-bolt"></i>
+                    <div>
+                        <h4>Комбо</h4>
+                        <p>Быстрые клики активируют комбо-систему с множителем</p>
+                    </div>
+                </div>
+                <div class="help-item">
+                    <i class="fas fa-save"></i>
+                    <div>
+                        <h4>Сохранение</h4>
+                        <p>Прогресс автоматически сохраняется в вашем браузере</p>
+                    </div>
+                </div>
+                <div class="help-item">
+                    <i class="fas fa-volume-up"></i>
+                    <div>
+                        <h4>Звуки</h4>
+                        <p>Положите файлы click.mp3 и achievement.mp3 в папку с игрой</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Аудио элементы -->
+    <audio id="clickSound" preload="auto">
+        <source src="click.mp3" type="audio/mpeg">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-select-click-1109.mp3" type="audio/mpeg">
+    </audio>
+    
+    <audio id="achievementSound" preload="auto">
+        <source src="achievement.mp3" type="audio/mpeg">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-winning-chimes-2015.mp3" type="audio/mpeg">
+    </audio>
+    
+    <audio id="upgradeSound" preload="auto">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-unlock-game-notification-253.mp3" type="audio/mpeg">
+    </audio>
+    
+    <audio id="comboSound" preload="auto">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-game-ball-tap-2073.mp3" type="audio/mpeg">
+    </audio>
 
     <script src="script.js"></script>
 </body>
-  </html>
+                </html>
