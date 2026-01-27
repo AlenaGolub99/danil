@@ -9,35 +9,36 @@ let comboMultiplier = 1;
 let comboTimeout = null;
 let comboEndTime = 0;
 let soundEnabled = true;
-let achievements = [];
+
+// Улучшения
 let upgrades = {
     autoClicker: { purchased: false, cost: 50, cps: 1 },
     megaClick: { purchased: false, cost: 100, multiplier: 2 },
     clickFactory: { purchased: false, cost: 500, cps: 5 }
 };
 
-// Список ачивок
+// Ачивки
 const ACHIEVEMENTS = [
-    { id: 1, name: "Первый анальный контакт", description: "Сделать первый клик", icon: "👋", condition: 1, type: "clicks", unlocked: false },
-    { id: 2, name: "Гейклуб", description: "10 кликов", icon: "🐣", condition: 10, type: "clicks", unlocked: false },
-    { id: 3, name: "Свинка Пеппа", description: "50 кликов", icon: "👍", condition: 50, type: "clicks", unlocked: false },
-    { id: 4, name: "Розовый дилдак", description: "100 кликов", icon: "🤝", condition: 100, type: "clicks", unlocked: false },
-    { id: 5, name: "Гей-порно", description: "250 кликов", icon: "🔥", condition: 250, type: "clicks", unlocked: false },
-    { id: 6, name: "ARE YOU SURE?", description: "500 кликов", icon: "😍", condition: 500, type: "clicks", unlocked: false },
-    { id: 7, name: "Член во рту", description: "1000 кликов", icon: "🤪", condition: 1000, type: "clicks", unlocked: false },
-    { id: 8, name: "Гермафродитная особа", description: "2500 кликов", icon: "👑", condition: 2500, type: "clicks", unlocked: false },
-    { id: 9, name: "Мама я покакал", description: "5000 кликов", icon: "💫", condition: 5000, type: "clicks", unlocked: false },
-    { id: 10, name: "Ел гавно", description: "Купить автокликер", icon: "⚙️", condition: "autoClicker", type: "upgrade", unlocked: false },
-    { id: 11, name: "Я помню пенис большой", description: "Купить мега-клик", icon: "💪", condition: "megaClick", type: "upgrade", unlocked: false },
-    { id: 12, name: "Легендарный поедатель говна", description: "Купить фабрику кликов", icon: "🏭", condition: "clickFactory", type: "upgrade", unlocked: false },
-    { id: 13, name: "Сдох от спида (ну и хорошо)", description: "Достичь 10 CPS", icon: "🚀", condition: 10, type: "cps", unlocked: false },
-    { id: 14, name: "КОРОЛЬ ЛГБТ-СООБЩЕСТВА", description: "Достичь 25 CPS", icon: "⚡", condition: 25, type: "cps", unlocked: false },
-    { id: 15, name: "ЕБАНАЯ ПИДРИЛААААААА СУКА", description: "Купить все улучшения", icon: "🎓", condition: "all", type: "allUpgrades", unlocked: false }
+    { id: 1, name: "Первый клик", description: "Сделать первый клик", icon: "👋", condition: 1, type: "clicks", unlocked: false },
+    { id: 2, name: "Новичок", description: "10 кликов", icon: "🐣", condition: 10, type: "clicks", unlocked: false },
+    { id: 3, name: "Любитель", description: "50 кликов", icon: "👍", condition: 50, type: "clicks", unlocked: false },
+    { id: 4, name: "Фанат", description: "100 кликов", icon: "🤝", condition: 100, type: "clicks", unlocked: false },
+    { id: 5, name: "Поклонник", description: "250 кликов", icon: "🔥", condition: 250, type: "clicks", unlocked: false },
+    { id: 6, name: "Суперфанат", description: "500 кликов", icon: "😍", condition: 500, type: "clicks", unlocked: false },
+    { id: 7, name: "Одержимый", description: "1000 кликов", icon: "🤪", condition: 1000, type: "clicks", unlocked: false },
+    { id: 8, name: "Легенда", description: "2500 кликов", icon: "👑", condition: 2500, type: "clicks", unlocked: false },
+    { id: 9, name: "Бог кликера", description: "5000 кликов", icon: "💫", condition: 5000, type: "clicks", unlocked: false },
+    { id: 10, name: "Автоматизатор", description: "Купить автокликер", icon: "⚙️", condition: "autoClicker", type: "upgrade", unlocked: false },
+    { id: 11, name: "Силач", description: "Купить мега-клик", icon: "💪", condition: "megaClick", type: "upgrade", unlocked: false },
+    { id: 12, name: "Индустриалист", description: "Купить фабрику кликов", icon: "🏭", condition: "clickFactory", type: "upgrade", unlocked: false },
+    { id: 13, name: "Скорость звука", description: "Достичь 10 CPS", icon: "🚀", condition: 10, type: "cps", unlocked: false },
+    { id: 14, name: "Сверхзвуковой", description: "Достичь 25 CPS", icon: "⚡", condition: 25, type: "cps", unlocked: false },
+    { id: 15, name: "Мастер улучшений", description: "Купить все улучшения", icon: "🎓", condition: "all", type: "allUpgrades", unlocked: false }
 ];
 
 // ===== ИНИЦИАЛИЗАЦИЯ ИГРЫ =====
 function initGame() {
-    console.log(`ДанилКликер v${GAME_VERSION} запущен!`);
+    console.log('ДанилКликер запущен!');
     
     loadGame();
     setupEventListeners();
@@ -53,45 +54,32 @@ function initGame() {
 // ===== ЗАГРУЗКА ИЗОБРАЖЕНИЯ =====
 function loadImage() {
     const danilImage = document.getElementById('danilImage');
-    
-    // Пробуем загрузить из localStorage
     const savedImage = localStorage.getItem('danilclicker_custom_image');
+    
+    // Сначала пробуем загрузить пользовательское фото
     if (savedImage) {
         danilImage.innerHTML = `
-            <img src="${savedImage}" alt="Данил" onerror="this.onerror=null; loadDefaultImage()">
+            <img src="${savedImage}" alt="Данил" id="danilPhoto">
             <div class="click-effect" id="clickEffect">+1</div>
         `;
+        console.log('Загружено пользовательское фото');
         return;
     }
     
-    // Пробуем загрузить danil.png из корня
-    loadDefaultImage();
-}
-
-function loadDefaultImage() {
-    const danilImage = document.getElementById('danilImage');
+    // Пробуем загрузить danil.png
     const img = new Image();
     
     img.onload = function() {
+        console.log('Фото Данила загружено успешно');
         danilImage.innerHTML = `
-            <img src="danil.png" alt="Данил">
+            <img src="danil.png" alt="Данил" id="danilPhoto">
             <div class="click-effect" id="clickEffect">+1</div>
         `;
     };
     
     img.onerror = function() {
-        danilImage.innerHTML = `
-            <div class="image-placeholder">
-                <div class="placeholder-icon">
-                    <i class="fas fa-user"></i>
-                    <i class="fas fa-mouse-pointer pulse"></i>
-                </div>
-                <p>ЖМИ на Данила, хуила!</p>
-                <p class="hint">Положите файл danil.png в папку с игрой</p>
-                <p class="hint">Или загрузите фото через кнопку "ЗАГРУЗИТЬ ФОТО"</p>
-            </div>
-            <div class="click-effect" id="clickEffect">+1</div>
-        `;
+        console.log('Фото danil.png не найдено, показываю заглушку');
+        // Оставляем заглушку, которая уже есть в HTML
     };
     
     img.src = 'danil.png';
@@ -100,10 +88,11 @@ function loadDefaultImage() {
 // ===== НАСТРОЙКА СОБЫТИЙ =====
 function setupEventListeners() {
     // Клик по Данилу
-    document.getElementById('danilImage').addEventListener('click', handleClick);
+    const danilImage = document.getElementById('danilImage');
+    danilImage.addEventListener('click', handleClick);
     
     // Клик по пробелу
-    document.addEventListener('keydown', (e) => {
+    document.addEventListener('keydown', function(e) {
         if (e.code === 'Space') {
             e.preventDefault();
             handleClick();
@@ -127,14 +116,14 @@ function setupEventListeners() {
     document.getElementById('closeHelp').addEventListener('click', hideHelp);
     
     // Загрузка изображения
-    document.getElementById('importImageBtn').addEventListener('click', () => {
+    document.getElementById('importImageBtn').addEventListener('click', function() {
         document.getElementById('imageUpload').click();
     });
     
     document.getElementById('imageUpload').addEventListener('change', handleImageUpload);
     
     // Клик по фону для закрытия попапа помощи
-    document.getElementById('helpPopup').addEventListener('click', (e) => {
+    document.getElementById('helpPopup').addEventListener('click', function(e) {
         if (e.target.id === 'helpPopup') hideHelp();
     });
 }
@@ -147,6 +136,8 @@ function simulateClickEffect() {
 
 // ===== ОБРАБОТКА КЛИКА =====
 function handleClick() {
+    console.log('Клик зарегистрирован!');
+    
     // Рассчитываем количество кликов с учетом комбо
     const clicksToAdd = clickPower * comboMultiplier;
     clickCount += clicksToAdd;
@@ -162,14 +153,19 @@ function handleClick() {
         playSound('click');
     }
     
-    // Обновляем интерфейс и проверяем ачивки
+    // Обновляем интерфейс
     updateUI();
+    
+    // Проверяем ачивки
     checkAchievements();
+    
+    // Сохраняем игру
+    saveGame();
 }
 
 function showClickEffect(amount) {
     const clickEffect = document.getElementById('clickEffect');
-    const danilImage = document.getElementById('danilImage');
+    if (!clickEffect) return;
     
     // Позиционируем эффект в случайном месте
     const x = Math.random() * 70 + 15;
@@ -181,8 +177,9 @@ function showClickEffect(amount) {
     
     // Запускаем анимацию
     clickEffect.style.animation = 'none';
-    void clickEffect.offsetWidth; // Сбрасываем анимацию
-    clickEffect.style.animation = 'floatUp 1s ease-out forwards';
+    setTimeout(() => {
+        clickEffect.style.animation = 'floatUp 1s ease-out forwards';
+    }, 10);
 }
 
 // ===== СИСТЕМА КОМБО =====
@@ -202,7 +199,7 @@ function updateCombo() {
     else comboMultiplier = 1;
     
     // Обновляем таймер комбо
-    comboEndTime = now + 2000; // Комбо длится 2 секунды
+    comboEndTime = now + 2000;
     updateComboTimer();
     
     // Запускаем таймер сброса комбо
@@ -213,15 +210,12 @@ function updateCombo() {
     }, 2000);
     
     updateComboDisplay();
-    
-    // Воспроизводим звук комбо
-    if (soundEnabled && comboCount > 1) {
-        playSound('combo');
-    }
 }
 
 function updateComboTimer() {
     const timerFill = document.getElementById('comboTimer');
+    if (!timerFill) return;
+    
     const now = Date.now();
     const timeLeft = comboEndTime - now;
     const percentage = Math.max(0, (timeLeft / 2000) * 100);
@@ -234,16 +228,20 @@ function updateComboTimer() {
 }
 
 function updateComboDisplay() {
-    document.getElementById('comboCount').textContent = comboCount;
+    const comboCountElement = document.getElementById('comboCount');
+    if (comboCountElement) {
+        comboCountElement.textContent = comboCount;
+    }
     
-    // Подсветка при комбо
     const comboDisplay = document.querySelector('.combo-display');
-    if (comboCount > 1) {
-        comboDisplay.style.borderColor = getComboColor();
-        comboDisplay.style.boxShadow = `0 0 20px ${getComboColor()}80`;
-    } else {
-        comboDisplay.style.borderColor = '';
-        comboDisplay.style.boxShadow = '';
+    if (comboDisplay) {
+        if (comboCount > 1) {
+            comboDisplay.style.borderColor = getComboColor();
+            comboDisplay.style.boxShadow = `0 0 20px ${getComboColor()}80`;
+        } else {
+            comboDisplay.style.borderColor = '';
+            comboDisplay.style.boxShadow = '';
+        }
     }
 }
 
@@ -271,16 +269,18 @@ function buyUpgrade(upgradeId) {
         
         // Обновляем кнопку
         const button = document.querySelector(`#${upgradeId} .upgrade-btn`);
-        button.disabled = true;
-        button.innerHTML = `
-            <span class="cost">✓</span>
-            <span class="btn-text">КУПЛЕНО</span>
-        `;
-        button.style.background = 'linear-gradient(135deg, #666, #888)';
+        if (button) {
+            button.disabled = true;
+            button.innerHTML = `
+                <span class="cost">✓</span>
+                <span class="btn-text">КУПЛЕНО</span>
+            `;
+            button.style.background = 'linear-gradient(135deg, #666, #888)';
+        }
         
         // Воспроизводим звук
         if (soundEnabled) {
-            playSound('upgrade');
+            playSound('achievement');
         }
         
         // Показываем уведомление
@@ -365,6 +365,8 @@ function unlockAchievement(achievement) {
 
 function renderAchievements() {
     const grid = document.getElementById('achievementsGrid');
+    if (!grid) return;
+    
     grid.innerHTML = '';
     
     const unlockedCount = ACHIEVEMENTS.filter(a => a.unlocked).length;
@@ -372,8 +374,10 @@ function renderAchievements() {
     const progress = Math.round((unlockedCount / totalCount) * 100);
     
     // Обновляем прогресс-бар
-    document.getElementById('achievementBar').style.width = `${progress}%`;
-    document.getElementById('achievementText').textContent = `${progress}%`;
+    const achievementBar = document.getElementById('achievementBar');
+    const achievementText = document.getElementById('achievementText');
+    if (achievementBar) achievementBar.style.width = `${progress}%`;
+    if (achievementText) achievementText.textContent = `${progress}%`;
     
     ACHIEVEMENTS.forEach(ach => {
         const card = document.createElement('div');
@@ -426,8 +430,11 @@ function updateAchievementDisplay() {
     const totalCount = ACHIEVEMENTS.length;
     const progress = Math.round((unlockedCount / totalCount) * 100);
     
-    document.getElementById('achievementCount').textContent = `${unlockedCount}/${totalCount}`;
-    document.getElementById('achievementProgress').textContent = `${progress}%`;
+    const achievementCount = document.getElementById('achievementCount');
+    const achievementProgress = document.getElementById('achievementProgress');
+    
+    if (achievementCount) achievementCount.textContent = `${unlockedCount}/${totalCount}`;
+    if (achievementProgress) achievementProgress.textContent = `${progress}%`;
 }
 
 // ===== ЗВУКИ =====
@@ -437,7 +444,9 @@ function playSound(soundType) {
     const audio = document.getElementById(`${soundType}Sound`);
     if (audio) {
         audio.currentTime = 0;
-        audio.play().catch(e => console.log(`Не удалось воспроизвести звук: ${e}`));
+        audio.play().catch(e => {
+            console.log(`Не удалось воспроизвести звук: ${e}`);
+        });
     }
 }
 
@@ -479,7 +488,7 @@ function handleImageUpload(event) {
         // Обновляем отображение
         const danilImage = document.getElementById('danilImage');
         danilImage.innerHTML = `
-            <img src="${e.target.result}" alt="Данил">
+            <img src="${e.target.result}" alt="Данил" id="danilPhoto">
             <div class="click-effect" id="clickEffect">+1</div>
         `;
         
@@ -531,11 +540,6 @@ function loadGame() {
     try {
         const saveData = JSON.parse(saved);
         
-        // Проверяем версию
-        if (saveData.version !== GAME_VERSION) {
-            console.log('Версия сохранения отличается, выполняем миграцию...');
-        }
-        
         // Загружаем основные данные
         clickCount = saveData.clickCount || 0;
         clicksPerSecond = saveData.clicksPerSecond || 0;
@@ -581,6 +585,8 @@ function loadGame() {
 
 function updateSoundButton() {
     const button = document.getElementById('soundToggle');
+    if (!button) return;
+    
     const icon = button.querySelector('i');
     const text = button.querySelector('span');
     
@@ -604,4 +610,8 @@ function resetGame() {
         clickPower = 1;
         autoClickers = 0;
         comboCount = 0;
-        combo
+        comboMultiplier = 1;
+        
+        upgrades = {
+            autoClicker: { purchased: false, cost: 50, cps: 1 },
+ 
